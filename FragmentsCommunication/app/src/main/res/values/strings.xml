@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">FragmentsCommunication</string>
+    <string name="button_text">Send</string>
+    <string name="edit_text_hint">Enter some data</string>
 </resources>
