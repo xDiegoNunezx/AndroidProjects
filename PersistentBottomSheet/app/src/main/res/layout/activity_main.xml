@@ -25,6 +25,7 @@
             android:text="Close"/>
 
         <TextView
+            android:id="@+id/textview_state"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingTop="8dp"
@@ -37,7 +38,7 @@
     <androidx.core.widget.NestedScrollView
         android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
-        android:layout_height="3500dp"
+        android:layout_height="350dp"
         android:background="@android:color/holo_green_light"
         app:behavior_hideable="true"
         app:behavior_peekHeight="55dp"

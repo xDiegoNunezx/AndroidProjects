@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        textViewState = findViewById(R.id.textview_state)
         val view: View = findViewById(R.id.bottom_sheet)
         bottomSheetBehavior = BottomSheetBehavior.from(view)
 
@@ -34,15 +34,22 @@ class MainActivity : AppCompatActivity() {
         bottomSheetBehavior.addBottomSheetCallback(object: BottomSheetCallback(){
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 when(newState) {
-                    BottomSheetBehavior.STATE_EXPANDED ->
+                    BottomSheetBehavior.STATE_EXPANDED -> {
+                        textViewState.text = "EXPANDED"
+                    }
+                    BottomSheetBehavior.STATE_DRAGGING -> {
+                        textViewState.text = "DRAGGING"
+                    }
+                    BottomSheetBehavior.STATE_SETTLING -> {
+                        textViewState.text = "SETTLING"
+                    }
+                    BottomSheetBehavior.STATE_COLLAPSED -> {
+                        textViewState.text = "COLLAPSED"
+                    }
                 }
             }
-
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
-
             }
-
         })
-
     }
 }
