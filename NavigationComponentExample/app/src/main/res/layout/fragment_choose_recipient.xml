@@ -26,7 +26,6 @@
             app:helperText="Recipient"
             app:errorEnabled="true"
             android:layout_weight="60"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             >
 
             <com.google.android.material.textfield.TextInputEditText
@@ -35,8 +34,7 @@
                 android:inputType="text"
                 android:maxLines="1"
                 android:hint="Name"
-                android:id="@+id/input_recipient"
-                />
+                android:id="@+id/input_recipient" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
