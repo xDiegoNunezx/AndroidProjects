@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.room"
+    namespace = "com.example.gson"
     compileSdk = 33
 
     defaultConfig {
-        applicationId = "com.example.room"
+        applicationId = "com.example.gson"
         minSdk = 24
         targetSdk = 33
         versionCode = 1
@@ -36,15 +36,8 @@ android {
 }
 
 dependencies {
-    val room_version = "2.5.2"
-    val lifecycle_version = "2.6.1"
 
-    // ViewModel
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
-
-    implementation("androidx.room:room-runtime:$room_version")
-    annotationProcessor("androidx.room:room-compiler:$room_version")
-    implementation("androidx.core:core-ktx:1.10.1")
+    implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.9.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")

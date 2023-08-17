@@ -11,5 +11,5 @@ data class Note(
     val priority: Int
 ) {
     @PrimaryKey(autoGenerate = true)
-    val id = 0
+    var id = 0
 }
