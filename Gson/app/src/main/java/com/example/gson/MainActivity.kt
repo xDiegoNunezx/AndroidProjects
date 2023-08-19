@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.lang.reflect.Type
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -13,14 +15,26 @@ class MainActivity : AppCompatActivity() {
         val gson = Gson()
 
         /*
-        val employee = Employee("Alex",23,"alex@gmail.com")
+        val familyMembers = arrayOf(
+            FamilyMember("Wife",35),
+            FamilyMember("Daughter",7)
+        )
+        val address = Address("Rumania", "Bucuresti")
+        val employee = Employee("Alex", 23, "alex@gmail.com", address, familyMembers)
         val json = gson.toJson(employee)
-        Log.d("json",json)
+        Log.d("json", json)
+*/
 
-         */
-
-        val json = "{\"firstName\":\"Alex\",\"age\":23,\"mail\":alex@gmail.com\"}";
+/*
+        val json = "{\"address\":{\"city\":\"Bucuresti\",\"country\":\"Rumania\"},\"age\":23,\"family\":[{\"age\":35,\"role\":\"Wife\"},{\"age\":7,\"role\":\"Daughter\"}],\"firstName\":\"Alex\",\"mail\":\"alex@gmail.com\"}";
         val employee = gson.fromJson(json, Employee::class.java)
         Log.d("json",employee.toString())
+*/
+
+        val json = "[{\"age\":35,\"role\":\"Wife\"},{\"age\":7,\"role\":\"Daughter\"}]";
+        val familyType: Type = object : TypeToken<MutableList<FamilyMember>>(){}.type
+        val familyMembers: MutableList<FamilyMember> = gson.fromJson(json, familyType)
+        Log.d("json",familyMembers.toString())
+
     }
 }

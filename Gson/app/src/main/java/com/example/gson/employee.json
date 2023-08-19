@@ -1,5 +1,19 @@
 {
+  "address": {
+    "city": "Bucuresti",
+    "country": "Rumania"
+  },
   "age": 23,
+  "family": [
+    {
+      "age": 35,
+      "role": "Wife"
+    },
+    {
+      "age": 7,
+      "role": "Daughter"
+    }
+  ],
   "firstName": "Alex",
   "mail": "alex@gmail.com"
 }
