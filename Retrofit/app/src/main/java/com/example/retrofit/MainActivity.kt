@@ -30,7 +30,9 @@ class MainActivity : AppCompatActivity() {
 
         //getPosts()
         //getComments()
-        createPost()
+        //createPost()
+        //updatePot()
+        deletePost()
     }
 
     private fun getPosts() {
@@ -134,6 +136,53 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<Post>, t: Throwable) {
+                Toast.makeText(this@MainActivity, "Error: $t", Toast.LENGTH_SHORT)
+                    .show()
+            }
+
+        })
+    }
+
+    private fun updatePot() {
+        val post = Post(25, null,"How are you?")
+        val call = jsonPlaceHolderApi.patchPost(5,post)
+
+        call.enqueue(object : Callback<Post>{
+            override fun onResponse(call: Call<Post>, response: Response<Post>) {
+                if (response.isSuccessful) {
+                    val postResponse = response.body()!!
+                    var content = ""
+                    content += "Code: " + response.code() + "\n"
+                    content += "ID: " + "${postResponse.id}" + "\n"
+                    content += "User ID: " + "${postResponse.userId}" + "\n"
+                    content += "Title: " + postResponse.title + "\n"
+                    content += "Text: " + postResponse.text + "\n"
+
+                    textViewResult.append(content)
+                } else {
+                    textViewResult.text = response.code().toString()
+                }
+            }
+
+            override fun onFailure(call: Call<Post>, t: Throwable) {
+                Toast.makeText(this@MainActivity, "Error: $t", Toast.LENGTH_SHORT)
+                    .show()
+            }
+
+        })
+    }
+    
+    private fun deletePost(){
+        val call = jsonPlaceHolderApi.deletePost(25)
+        call.enqueue(object : Callback<Unit> {
+            override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
+                if(response.isSuccessful) {
+                    textViewResult.text = response.code()
+                        .toString()
+                }
+            }
+
+            override fun onFailure(call: Call<Unit>, t: Throwable) {
                 Toast.makeText(this@MainActivity, "Error: $t", Toast.LENGTH_SHORT)
                     .show()
             }
