@@ -28,12 +28,20 @@ class MainActivity : AppCompatActivity() {
             .build()
         jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi::class.java)
 
-        getPosts()
+        //getPosts()
         //getComments()
+        createPost()
     }
 
     private fun getPosts() {
-        val call = jsonPlaceHolderApi.getPosts(6)
+        val parameters = mutableMapOf<String,String>()
+        parameters["userId"] = "1"
+        parameters["_sort"] = "id"
+        parameters["_order"] = "desc"
+
+        //val call = jsonPlaceHolderApi.getPosts(6, 3,"id", "asc",7,8,9)
+        val call = jsonPlaceHolderApi.getPosts(parameters)
+
         call.enqueue(object : Callback<MutableList<Post>> {
             override fun onResponse(
                 call: Call<MutableList<Post>>,
@@ -50,20 +58,24 @@ class MainActivity : AppCompatActivity() {
 
                         textViewResult.append(content)
                     }
+                    Toast.makeText(this@MainActivity, "Esooo", Toast.LENGTH_LONG)
+                        .show()
                 } else {
                     textViewResult.text = response.code().toString()
                 }
             }
 
             override fun onFailure(call: Call<MutableList<Post>>, t: Throwable) {
-                Toast.makeText(this@MainActivity, "Error: ${t.toString()}", Toast.LENGTH_SHORT)
+                Toast.makeText(this@MainActivity, "Error: $t", Toast.LENGTH_SHORT)
                     .show()
             }
         })
     }
 
     private fun getComments(){
-        val call = jsonPlaceHolderApi.getComments(4)
+        //val call = jsonPlaceHolderApi.getComments(4)
+        val call = jsonPlaceHolderApi.getComments("post/2/comments")
+
         call.enqueue(object : Callback<MutableList<Comment>>{
             override fun onResponse(
                 call: Call<MutableList<Comment>>,
@@ -82,13 +94,50 @@ class MainActivity : AppCompatActivity() {
 
                         textViewResult.append(content)
                     }
+                } else {
+                    textViewResult.text = response.code().toString()
                 }
             }
 
             override fun onFailure(call: Call<MutableList<Comment>>, t: Throwable) {
-                Toast.makeText(this@MainActivity, "Error: ${t.toString()}", Toast.LENGTH_SHORT)
+                Toast.makeText(this@MainActivity, "Error: $t", Toast.LENGTH_SHORT)
                     .show()
             }
+        })
+    }
+
+    private fun createPost() {
+        //val post = Post(20,"New Tile","New text")
+        //val call = jsonPlaceHolderApi.createPost(post)
+        val fields = mutableMapOf<String,String>()
+        fields["userId"] = "66"
+        fields["title"] = "This is a new title"
+        fields["body"] = "This is a new text"
+
+        //val call = jsonPlaceHolderApi.createPost(25,"New Title","New Text")
+        val call = jsonPlaceHolderApi.createPost(fields)
+        call.enqueue(object : Callback<Post>{
+            override fun onResponse(call: Call<Post>, response: Response<Post>) {
+                if (response.isSuccessful) {
+                    val postResponse = response.body()!!
+                    var content = ""
+                    content += "Code: " + response.code() + "\n"
+                    content += "ID: " + "${postResponse.id}" + "\n"
+                    content += "User ID: " + "${postResponse.userId}" + "\n"
+                    content += "Title: " + postResponse.title + "\n"
+                    content += "Text: " + postResponse.text + "\n"
+
+                    textViewResult.append(content)
+                } else {
+                    textViewResult.text = response.code().toString()
+                }
+            }
+
+            override fun onFailure(call: Call<Post>, t: Throwable) {
+                Toast.makeText(this@MainActivity, "Error: $t", Toast.LENGTH_SHORT)
+                    .show()
+            }
+
         })
     }
 }
