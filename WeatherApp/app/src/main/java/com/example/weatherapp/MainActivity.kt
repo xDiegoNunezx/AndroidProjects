@@ -77,7 +77,10 @@ class MainActivity : AppCompatActivity() {
             Priority.PRIORITY_HIGH_ACCURACY, 1000
         ).build()
         mFusedLocationClient.requestLocationUpdates(locationRequest, object : LocationCallback() {
+            @RequiresApi(Build.VERSION_CODES.R)
             override fun onLocationResult(locationResult: LocationResult) {
+                val speed = locationResult.lastLocation?.speedAccuracyMetersPerSecond
+                Toast.makeText(this@MainActivity,"Speed $speed",Toast.LENGTH_SHORT).show()
                 getLocationWeatherDetails(locationResult.lastLocation?.latitude!!,
                     locationResult.lastLocation?.longitude!!)
             }
