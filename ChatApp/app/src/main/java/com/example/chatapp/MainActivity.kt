@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
     private val STORAGE_REQUEST_CODE = 3232
     private lateinit var uri: Uri
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
-    private val usersRef: CollectionReference = db.collection("Notebook")
+    private val usersRef: CollectionReference = db.collection("users_collection")
     private lateinit var storageRef: StorageReference
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -163,7 +163,7 @@ class MainActivity : AppCompatActivity() {
                     }
             }
         } else {
--
+
         }
     }
 
