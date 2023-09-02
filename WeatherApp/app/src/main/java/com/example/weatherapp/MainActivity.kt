@@ -79,8 +79,9 @@ class MainActivity : AppCompatActivity() {
         mFusedLocationClient.requestLocationUpdates(locationRequest, object : LocationCallback() {
             @RequiresApi(Build.VERSION_CODES.R)
             override fun onLocationResult(locationResult: LocationResult) {
-                val speed = locationResult.lastLocation?.speedAccuracyMetersPerSecond
-                Toast.makeText(this@MainActivity,"Speed $speed",Toast.LENGTH_SHORT).show()
+                //val speed = locationResult.lastLocation?.speedAccuracyMetersPerSecond
+                //Toast.makeText(this@MainActivity,"Speed $speed",Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@MainActivity,"${locationResult.lastLocation?.latitude!!} ${locationResult.lastLocation?.longitude!!}",Toast.LENGTH_SHORT).show()
                 getLocationWeatherDetails(locationResult.lastLocation?.latitude!!,
                     locationResult.lastLocation?.longitude!!)
             }

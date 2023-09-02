@@ -1,4 +1,3 @@
-
 package com.example.chatapp
 
 import android.content.Intent
@@ -6,6 +5,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        mBinding = DataBindingUtil.setContentView(this,R.layout.activity_main)
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         storageRef = FirebaseStorage.getInstance().reference
 
         mBinding.signInButton.setOnClickListener {
@@ -56,15 +56,19 @@ class MainActivity : AppCompatActivity() {
             prevAnimation()
         }
         mBinding.profileImage.setOnClickListener {
-            if(ActivityCompat.checkSelfPermission(this@MainActivity,android.Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(
+                    this@MainActivity,
+                    android.Manifest.permission.READ_EXTERNAL_STORAGE
+                )
+                != PackageManager.PERMISSION_GRANTED
+            ) {
                 requestPermission()
             } else {
                 getImage()
             }
         }
-        getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
-            if(it.resultCode == RESULT_OK) {
+        getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == RESULT_OK) {
                 mBinding.profileImage.setImageURI(it.data?.data)
                 uri = it.data?.data!!
             }
@@ -72,20 +76,28 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun requestPermission() {
-        if(ActivityCompat.shouldShowRequestPermissionRationale(this@MainActivity,
-                android.Manifest.permission.READ_EXTERNAL_STORAGE)){
+        if (ActivityCompat.shouldShowRequestPermissionRationale(
+                this@MainActivity,
+                android.Manifest.permission.READ_EXTERNAL_STORAGE
+            )
+        ) {
             AlertDialog.Builder(this@MainActivity)
-                .setPositiveButton("Yes") {_,_ ->
-                    ActivityCompat.requestPermissions(this@MainActivity, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
-                        STORAGE_REQUEST_CODE)
-                }.setNegativeButton("No") {dialog, _ ->
+                .setPositiveButton("Yes") { _, _ ->
+                    ActivityCompat.requestPermissions(
+                        this@MainActivity,
+                        arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
+                        STORAGE_REQUEST_CODE
+                    )
+                }.setNegativeButton("No") { dialog, _ ->
                     dialog.cancel()
                 }.setTitle("Permission needed")
                 .setMessage("This permission is needed for accessing the internal storage")
                 .show()
         } else {
-            ActivityCompat.requestPermissions(this@MainActivity, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
-                STORAGE_REQUEST_CODE)
+            ActivityCompat.requestPermissions(
+                this@MainActivity, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
+                STORAGE_REQUEST_CODE
+            )
         }
     }
 
@@ -95,8 +107,9 @@ class MainActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if(requestCode == STORAGE_REQUEST_CODE && grantResults.size > 0
-            && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (requestCode == STORAGE_REQUEST_CODE && grantResults.size > 0
+            && grantResults[0] == PackageManager.PERMISSION_GRANTED
+        ) {
             getImage()
         } else {
             Toast.makeText(this@MainActivity, "Permission not granted", Toast.LENGTH_LONG).show()
@@ -111,37 +124,48 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun createAccount() {
+        showProgressBar2()
         val email = mBinding.signUpInputEmail.text.toString().trim()
         val password = mBinding.signUpInputPassword.text.toString().trim()
         val confirmPassword = mBinding.signUpInputConfirmPassword.text.toString().trim()
         val userName = mBinding.signUpInputUsername.text.toString().trim()
 
-        if(email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()){
-            Toast.makeText(this,"You should provide an email and a password",Toast.LENGTH_LONG).show()
+        if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+            Toast.makeText(this, "You should provide an email and a password", Toast.LENGTH_LONG)
+                .show()
+            hideProgressBar2()
             return
         }
 
-        if(userName.isEmpty()) {
-            Toast.makeText(this,"You should provide an username",Toast.LENGTH_LONG).show()
+        if (userName.isEmpty()) {
+            Toast.makeText(this, "You should provide an username", Toast.LENGTH_LONG).show()
+            hideProgressBar2()
             return
         }
 
-        if(password != confirmPassword) {
-            Toast.makeText(this,"Passwords don't match.",Toast.LENGTH_LONG).show()
+        if (password != confirmPassword) {
+            Toast.makeText(this, "Passwords don't match.", Toast.LENGTH_LONG).show()
+            hideProgressBar2()
             return
         }
 
-        if(password.length <= 6) {
-            Toast.makeText(this,"Passwords should have at least 6 characters.",Toast.LENGTH_LONG).show()
+        if (password.length <= 6) {
+            Toast.makeText(this, "Passwords should have at least 6 characters.", Toast.LENGTH_LONG)
+                .show()
+            hideProgressBar2()
             return
         }
 
-        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email,password)
-            .addOnCompleteListener(this){ task ->
-                if(task.isSuccessful){
+        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
                     Toast.makeText(this, "User created.", Toast.LENGTH_LONG).show()
                 } else {
-                    Toast.makeText(this, "Account wasn't created.\n${task.exception}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        this,
+                        "Account wasn't created.\n${task.exception}",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
         if (this::uri.isInitialized) {
@@ -152,53 +176,100 @@ class MainActivity : AppCompatActivity() {
                 result.addOnSuccessListener {
                     uri = it
                 }
-                val user = User(userName,uri.toString(),FirebaseAuth.getInstance().currentUser?.uid!!)
+                val user =
+                    User(userName, uri.toString(), FirebaseAuth.getInstance().currentUser?.uid!!)
                 usersRef.document()
                     .set(user)
                     .addOnSuccessListener {
-                        Toast.makeText(this@MainActivity,"Account created",Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@MainActivity, "Account created", Toast.LENGTH_LONG)
+                            .show()
+                        hideProgressBar2()
                         sendToAct()
                     }.addOnFailureListener {
-                        Toast.makeText(this@MainActivity,"Account wasn't created",Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            this@MainActivity,
+                            "Account wasn't created",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        hideProgressBar2()
                     }
             }
         } else {
-
+            signIn(email,password)
+            val user =
+                User(userName, "", FirebaseAuth.getInstance().currentUser?.uid!!)
+            usersRef.document()
+                .set(user)
+                .addOnSuccessListener {
+                    Toast.makeText(this@MainActivity, "Account created", Toast.LENGTH_LONG)
+                        .show()
+                    hideProgressBar2()
+                    sendToAct()
+                }.addOnFailureListener {
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Account wasn't created",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    hideProgressBar2()
+                }
         }
     }
 
-    private fun signIn() {
-         val email = mBinding.signInInputEmail.editText?.text.toString().trim()
-         val password = mBinding.signInInputPassword.editText?.text.toString().trim()
-
-         if(email.isEmpty() || password.isEmpty()){
-             Toast.makeText(this,"You should provide an email and a password",Toast.LENGTH_LONG).show()
-             return
-         }
-
-         FirebaseAuth.getInstance().signInWithEmailAndPassword(email,password)
-             .addOnCompleteListener(this) { task ->
-                 if(task.isSuccessful) {
-                     Toast.makeText(this, "User signed in", Toast.LENGTH_LONG).show()
-                 } else {
-                     Toast.makeText(this, "Couldn't sign in\nSomething went wrong.", Toast.LENGTH_LONG).show()
-                 }
-             }
+    private fun signIn(email: String = mBinding.signInInputEmail.editText?.text.toString().trim(),
+                       password: String = mBinding.signInInputPassword.editText?.text.toString().trim()) {
+        showProgressBar1()
+        if (email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(this, "You should provide an email and a password", Toast.LENGTH_LONG)
+                .show()
+            hideProgressBar1()
+            return
+        }
+        FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    Toast.makeText(this, "User signed in", Toast.LENGTH_LONG).show()
+                    sendToAct()
+                } else {
+                    Toast.makeText(
+                        this,
+                        "Couldn't sign in\nSomething went wrong.",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                hideProgressBar1()
+            }
     }
 
-    private fun nextAnimation(){
-        mBinding.flipper.setInAnimation(this,android.R.anim.slide_in_left)
-        mBinding.flipper.setOutAnimation(this,android.R.anim.slide_out_right)
+    private fun nextAnimation() {
+        mBinding.flipper.setInAnimation(this, android.R.anim.slide_in_left)
+        mBinding.flipper.setOutAnimation(this, android.R.anim.slide_out_right)
         mBinding.flipper.showNext()
     }
 
-    private fun prevAnimation(){
-        mBinding.flipper.setInAnimation(this,R.anim.slide_in_right)
-        mBinding.flipper.setOutAnimation(this,R.anim.slide_out_left)
+    private fun prevAnimation() {
+        mBinding.flipper.setInAnimation(this, R.anim.slide_in_right)
+        mBinding.flipper.setOutAnimation(this, R.anim.slide_out_left)
         mBinding.flipper.showPrevious()
     }
 
     private fun sendToAct() {
         startActivity(Intent(this@MainActivity, ChatActivity::class.java))
+    }
+
+    private fun showProgressBar1() {
+        mBinding.progressBar1.visibility = View.VISIBLE
+    }
+
+    private fun hideProgressBar1() {
+        mBinding.progressBar1.visibility = View.INVISIBLE
+    }
+
+    private fun showProgressBar2() {
+        mBinding.progressBar2.visibility = View.VISIBLE
+    }
+
+    private fun hideProgressBar2() {
+        mBinding.progressBar2.visibility = View.INVISIBLE
     }
 }
