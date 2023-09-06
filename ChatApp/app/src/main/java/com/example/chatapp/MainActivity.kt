@@ -160,6 +160,54 @@ class MainActivity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     Toast.makeText(this, "User created.", Toast.LENGTH_LONG).show()
+                    if(task.isComplete){
+                        if (this::uri.isInitialized) {
+                            val filePath = storageRef.child("profile_images")
+                                .child(uri.lastPathSegment!!)
+                            filePath.putFile(uri).addOnSuccessListener { task ->
+                                val result: Task<Uri> = task.metadata?.reference?.downloadUrl!!
+                                result.addOnSuccessListener {
+                                    uri = it
+                                }
+                                val user =
+                                    User(userName, uri.toString(), FirebaseAuth.getInstance().currentUser?.uid!!)
+                                usersRef.document()
+                                    .set(user)
+                                    .addOnSuccessListener {
+                                        Toast.makeText(this@MainActivity, "Account created", Toast.LENGTH_LONG)
+                                            .show()
+                                        hideProgressBar2()
+                                        sendToAct()
+                                    }.addOnFailureListener {
+                                        Toast.makeText(
+                                            this@MainActivity,
+                                            "Account wasn't created",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                        hideProgressBar2()
+                                    }
+                            }
+                        } else {
+                            //signIn(email,password)
+                            val user =
+                                User(userName, "", FirebaseAuth.getInstance().currentUser?.uid!!)
+                            usersRef.document()
+                                .set(user)
+                                .addOnSuccessListener {
+                                    Toast.makeText(this@MainActivity, "Account created", Toast.LENGTH_LONG)
+                                        .show()
+                                    hideProgressBar2()
+                                    sendToAct()
+                                }.addOnFailureListener {
+                                    Toast.makeText(
+                                        this@MainActivity,
+                                        "Account wasn't created",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                    hideProgressBar2()
+                                }
+                        }
+                    }
                 } else {
                     Toast.makeText(
                         this,
@@ -168,52 +216,6 @@ class MainActivity : AppCompatActivity() {
                     ).show()
                 }
             }
-        if (this::uri.isInitialized) {
-            val filePath = storageRef.child("profile_images")
-                .child(uri.lastPathSegment!!)
-            filePath.putFile(uri).addOnSuccessListener { task ->
-                val result: Task<Uri> = task.metadata?.reference?.downloadUrl!!
-                result.addOnSuccessListener {
-                    uri = it
-                }
-                val user =
-                    User(userName, uri.toString(), FirebaseAuth.getInstance().currentUser?.uid!!)
-                usersRef.document()
-                    .set(user)
-                    .addOnSuccessListener {
-                        Toast.makeText(this@MainActivity, "Account created", Toast.LENGTH_LONG)
-                            .show()
-                        hideProgressBar2()
-                        sendToAct()
-                    }.addOnFailureListener {
-                        Toast.makeText(
-                            this@MainActivity,
-                            "Account wasn't created",
-                            Toast.LENGTH_LONG
-                        ).show()
-                        hideProgressBar2()
-                    }
-            }
-        } else {
-            signIn(email,password)
-            val user =
-                User(userName, "", FirebaseAuth.getInstance().currentUser?.uid!!)
-            usersRef.document()
-                .set(user)
-                .addOnSuccessListener {
-                    Toast.makeText(this@MainActivity, "Account created", Toast.LENGTH_LONG)
-                        .show()
-                    hideProgressBar2()
-                    sendToAct()
-                }.addOnFailureListener {
-                    Toast.makeText(
-                        this@MainActivity,
-                        "Account wasn't created",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    hideProgressBar2()
-                }
-        }
     }
 
     private fun signIn(email: String = mBinding.signInInputEmail.editText?.text.toString().trim(),
@@ -255,6 +257,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun sendToAct() {
         startActivity(Intent(this@MainActivity, ChatActivity::class.java))
+        finish()
     }
 
     private fun showProgressBar1() {
@@ -262,7 +265,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun hideProgressBar1() {
-        mBinding.progressBar1.visibility = View.INVISIBLE
+        mBinding.progressBar1.visibility = View.GONE
     }
 
     private fun showProgressBar2() {
@@ -270,6 +273,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun hideProgressBar2() {
-        mBinding.progressBar2.visibility = View.INVISIBLE
+        mBinding.progressBar2.visibility = View.GONE
     }
 }

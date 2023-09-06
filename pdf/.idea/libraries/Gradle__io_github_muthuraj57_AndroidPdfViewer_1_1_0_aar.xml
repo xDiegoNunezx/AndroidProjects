@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Gradle: io.github.muthuraj57:AndroidPdfViewer:1.1.0@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/b70a984d9c67fa3606c1fa1a2d19f54b/transformed/AndroidPdfViewer-1.1.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/b70a984d9c67fa3606c1fa1a2d19f54b/transformed/AndroidPdfViewer-1.1.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/b70a984d9c67fa3606c1fa1a2d19f54b/transformed/AndroidPdfViewer-1.1.0/AndroidManifest.xml" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.github.muthuraj57/AndroidPdfViewer/1.1.0/6304beba1b7300a44317161cc5bfb3191470c577/AndroidPdfViewer-1.1.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
